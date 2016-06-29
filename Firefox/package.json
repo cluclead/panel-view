@@ -1,0 +1,20 @@
+{
+  "title": "WhatsApp Web",
+  "name": "iwweb",
+  "version": "0.1.0",
+  "description": "Access to WhatsApp Web from within a toolbar panelaand get badge notification of unread posts",
+  "main": "common.js",
+  "author": "Morni Colhkher",
+  "engines": {
+    "firefox": ">=38.0a1"
+  },
+  "license": "MPL 2.0",
+  "keywords": [
+    "jetpack"
+  ],
+  "permissions": {
+    "private-browsing": true,
+    "multiprocess": true,
+    "unsafe-content-script": true
+  }
+}
