@@ -1,10 +1,11 @@
 {
-  "title": "WhatsApp Web",
+  "title": "WhatsApp™ Messenger",
   "name": "iwweb",
-  "version": "0.1.0",
-  "description": "Access to WhatsApp Web from within a toolbar panelaand get badge notification of unread posts",
+  "version": "0.1.1",
+  "description": "Access to WhatsApp Web from within a toolbar panel and get badge notification of unread posts",
   "main": "common.js",
   "author": "Morni Colhkher",
+  "id": "rt42fsdty645jIidD@jetpack",
   "engines": {
     "firefox": ">=38.0a1"
   },
