@@ -4,57 +4,20 @@ var {ToggleButton} = require('sdk/ui/button/toggle');
 var tabs = require('sdk/tabs');
 var panels = require('sdk/panel');
 var self = require('sdk/self');
-var unload = require('sdk/system/unload');
 var sp = require('sdk/simple-prefs');
 var timers = require('sdk/timers');
-var array = require('sdk/util/array');
-var {Cc, Ci} = require('chrome');
+var utils = require('sdk/window/utils');
 var {getActiveView} = require('sdk/view/core');
 var Worker = require('sdk/content/worker').Worker;  // jshint ignore:line
 
-var panel, button, browser, workers = [];
-
-function update (title) {
-  let tmp = /\((\d+)\)/.exec(title);
-  if (tmp && tmp.length) {
-    button.badge = tmp[1];
-    button.label = title;
-  }
-  else {
-    button.badge = '';
-    button.label = 'WhatsApp™ Messenger';
-  }
-}
-// inject script into the panel -> browser element
-(function () {
-  let nsIObserverService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
-  let httpRequestObserver = {
-    observe: function(subject) {
-      let window = subject.defaultView;
-      if (window && window.location.href === 'https://web.whatsapp.com/') {
-        let worker = new Worker({
-          window,
-          contentScriptFile: self.data.url('./inject/inject.js'),
-        });
-        worker.on('pageshow', () => array.add(workers, worker));
-        worker.on('pagehide', () => array.remove(workers, worker));
-        worker.on('detach', () => array.remove(workers, worker));
-        worker.port.on('title', update);
-      }
-    }
-  };
-  nsIObserverService.addObserver(httpRequestObserver, 'document-element-inserted', false);
-  unload.when(function () {
-    nsIObserverService.removeObserver(httpRequestObserver, 'document-element-inserted');
-  });
-})();
+var panel, button, browser;
 
 button = new ToggleButton({
   id: self.name,
-  label: 'WhatsApp™ Messenger',
+  label: 'Skype™ Web',
   icon: {
-    '18': './icons/18.png',
-    '36': './icons/36.png',
+    '16': './icons/16.png',
+    '32': './icons/32.png',
     '64': './icons/64.png'
   },
   onChange: state => state.checked && panel.show({
@@ -66,7 +29,7 @@ panel = panels.Panel({
   contentURL: self.data.url('./panel/index.html'),
   contentScriptFile: self.data.url('./panel/index.js'),
   width: 40,
-  height: 500,
+  height: sp.prefs.height,
   onHide: () => button.state('window', {checked: false})
 });
 panel.port.on('open', (url) => {
@@ -74,26 +37,37 @@ panel.port.on('open', (url) => {
   tabs.open(url);
 });
 panel.port.on('refresh', () => {
-  browser.src = 'https://web.whatsapp.com/';
+  browser.src = 'https://web.skype.com/';
   browser.reload();
+});
+panel.port.on('settings', () => {
+  panel.hide();
+  utils.getMostRecentBrowserWindow().BrowserOpenAddonsMgr('addons://detail/' + self.id);
+});
+panel.port.on('pin', function (bol) {
+  getActiveView(panel).setAttribute('noautohide', bol);
 });
 
 browser = (function (panelView) {
-  // whatsapp cannot be loaded in an iframe; we use a safe browser element (type=content)
+  // display tooltips
+  panelView.setAttribute('tooltip', 'aHTMLTooltip');
   let b = panelView.ownerDocument.createElement('browser');
   b.setAttribute('type', 'content');
-  b.setAttribute('style', 'width: 660px;');
+  b.setAttribute('style', `width: ${sp.prefs.width}px;`);
   panelView.appendChild(b);
-  b.setAttribute('src', 'https://web.whatsapp.com/');
+  b.setAttribute('src', 'https://web.skype.com/');
   return b;
 })(getActiveView(panel));
 
-// reactivate WhatsApp if tab is closed
-tabs.on('close', function (tab) {
-  if(tab.url === 'https://web.whatsapp.com' || tab.url === 'https://web.whatsapp.com/') {
-    workers.forEach(w => w.port.emit('activate'));
-  }
-});
+sp.on('width', () => timers.setTimeout(() => {
+  sp.prefs.width = Math.max(300, sp.prefs.width);
+  browser.setAttribute('style', `width: ${sp.prefs.width}px;`);
+}, 2000));
+sp.on('height', () => timers.setTimeout(() => {
+  sp.prefs.height = Math.max(300, sp.prefs.height);
+  panel.height = sp.prefs.height;
+}, 2000));
+
 // FAQs page
 exports.main = function (options) {
   if (options.loadReason === 'install' || options.loadReason === 'startup') {
@@ -101,7 +75,7 @@ exports.main = function (options) {
     if (self.version !== version) {
       timers.setTimeout(function () {
         tabs.open(
-          'http://add0n.com/whatsapp-messenger.html?v=' + self.version +
+          'http://add0n.com/skype-web.html?v=' + self.version +
           (version ? '&p=' + version + '&type=upgrade' : '&type=install')
         );
       }, 3000);

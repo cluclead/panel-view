@@ -1,11 +1,23 @@
+html,
+body {
+  height: 100%;
+}
 body {
   margin: 0;
   display: flex;
   flex-direction: column;
   background-color: #fbfbfb;
   align-items: center;
-  padding-top: 5px;
+  padding: 5px 0;
   font-size: 14px;
+  box-sizing: border-box;
+}
+body>div {
+  display: flex;
+  flex-direction: column;
+}
+body>div:first-child {
+  flex: 1;
 }
 
 span {
@@ -26,4 +38,8 @@ span:active {
 }
 [class^="icon-"]:before {
   line-height: 25px;
+}
+
+span[data-cmd="pin"][data-value="true"]:before {
+  content: '\e803';
 }

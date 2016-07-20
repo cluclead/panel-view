@@ -20,6 +20,7 @@
   "icons": {
     "16": "data/icons/16.png",
     "48": "data/icons/48.png",
+    "120": "data/icons/120.png",
     "128": "data/icons/128.png"
   }
 }

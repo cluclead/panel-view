@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'fontello';
-  src: url('fontello.woff');
+  src: url('fontello.woff?121312321');
   font-weight: normal;
   font-style: normal;
 }
@@ -42,5 +42,8 @@
 
 .icon-home:before { content: '\e800'; } /* '' */
 .icon-refresh:before { content: '\e801'; } /* '' */
-.icon-whatsapp:before { content: '\e802'; } /* '' */
-.icon-github:before { content: '\e803'; } /* '' */
+.icon-pin-false:before { content: '\e802'; } /* '' */
+.icon-pin-true:before { content: '\e803'; } /* '' */
+.icon-settings:before { content: '\e804'; } /* '' */
+.icon-skype:before { content: '\f17e'; } /* '' */
+.icon-bug:before { content: '\f188'; } /* '' */
