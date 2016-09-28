@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'fontello';
-  src: url('fontello.woff');
+  src: url('fontello.woff?rand=1212');
   font-weight: normal;
   font-style: normal;
 }
@@ -40,7 +40,12 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
 
-.icon-home:before { content: '\e800'; } /* '' */
-.icon-refresh:before { content: '\e801'; } /* '' */
-.icon-whatsapp:before { content: '\e802'; } /* '' */
-.icon-github:before { content: '\e803'; } /* '' */
+.icon-refresh:before { content: '\e800'; } /* '' */
+.icon-home:before { content: '\e801'; } /* '' */
+.icon-pin-false:before { content: '\e802'; } /* '' */
+.icon-settings:before { content: '\e803'; } /* '' */
+.icon-pin-true:before { content: '\e804'; } /* '' */
+.icon-check-true:before { content: '\e807'; } /* '' */
+.icon-check-false:before { content: '\f096'; } /* '' */
+.icon-whatsapp:before { content: '\f232'; } /* '' */
+.icon-github:before { content: '\f300'; } /* '' */

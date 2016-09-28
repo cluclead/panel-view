@@ -1,7 +1,7 @@
 {
   "title": "WhatsApp™ Messenger",
   "name": "iwweb",
-  "version": "0.1.1",
+  "version": "0.1.6",
   "description": "Access to WhatsApp Web from within a toolbar panel and get badge notification of unread posts",
   "main": "common.js",
   "author": "Morni Colhkher",
@@ -17,5 +17,45 @@
     "private-browsing": true,
     "multiprocess": true,
     "unsafe-content-script": true
-  }
+  },
+  "preferences": [
+    {
+      "title": "Audio permission",
+      "type": "bool",
+      "name": "audio-permission",
+      "value": false
+    },
+    {
+      "title": "Video permission",
+      "type": "bool",
+      "name": "video-permission",
+      "value": false
+    },
+    {
+      "title": "Picture permission",
+      "type": "bool",
+      "name": "picture-permission",
+      "value": false
+    },
+    {
+      "description": "Width of panel in pixels",
+      "type": "integer",
+      "name": "width",
+      "value": 660,
+      "title": "Panel width:"
+    },
+    {
+      "description": "Height of panel in pixels",
+      "type": "integer",
+      "name": "height",
+      "value": 500,
+      "title": "Panel height:"
+    },
+    {
+      "title": "Display FAQs page on upgrades",
+      "type": "bool",
+      "name": "welcome",
+      "value": true
+    }
+  ]
 }

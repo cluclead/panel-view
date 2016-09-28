@@ -5,9 +5,29 @@
     <link rel="stylesheet" href="index.css"/>
   </head>
   <body data-loading=true>
-    <span data-value="https://web.whatsapp.com/" data-cmd="open" class="icon-whatsapp"></span>
-    <span data-value="https://github.com/cluclead/panel-view" data-cmd="open" class="icon-github"></span>
-    <span data-value="http://add0n.com/whatsapp-messenger.html" data-cmd="open" class="icon-home"></span>
-    <span data-cmd="refresh" class="icon-refresh"></span>
+    <div>
+      <span data-badge="0" data-value="https://web.whatsapp.com/" data-cmd="open" class="icon-whatsapp" title="Open WhatsApp Web in a browser tab"></span>
+      <span data-value="https://github.com/cluclead/panel-view" data-cmd="open" class="icon-github" title="Open bug reporter"></span>
+      <span data-value="http://add0n.com/whatsapp-messenger.html" data-cmd="open" class="icon-home" title="Open FAQs page"></span>
+      <span data-cmd="refresh" class="icon-refresh" title="Refresh panel"></span>
+      <span data-cmd="pin" data-value="false" class="icon-pin-false" title="Pin or unpin the panel"></span>
+    </div>
+    <div>
+      <div title="Allow WhatsApp to access to your audio device">
+        <input type="checkbox" id="cb_a">
+        <label for="cb_a" data-cmd="audio-permission">A</label>
+      </div>
+      <!--
+      <div title="Allow WhatsApp to access to your video device">
+        <input type="checkbox" id="cb_v">
+        <label for="cb_v" data-cmd="video-permission">V</label>
+      </div>
+      <div title="Allow WhatsApp to access to your pictures">
+        <input type="checkbox" id="cb_p">
+        <label for="cb_p" data-cmd="picture-permission">P</label>
+      </div>
+      -->
+      <span data-cmd="settings" class="icon-settings" title="Open settings page"></span>
+    </div>
   </body>
 </html>

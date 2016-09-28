@@ -1,13 +1,41 @@
+html,
+body {
+  height: 100%;
+}
 body {
   margin: 0;
   display: flex;
   flex-direction: column;
   background-color: #fbfbfb;
   align-items: center;
-  padding-top: 5px;
+  padding: 5px 0;
   font-size: 14px;
+  margin: 0;
+  box-sizing: border-box;
 }
-
+body>div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+body>div:first-child {
+  flex: 1;
+}
+label {
+  cursor: pointer;
+  -moz-user-select: none;
+}
+label:before {
+  font-family: 'fontello';
+  content: '\f096';
+  letter-spacing: 2px;
+}
+input[type=checkbox] {
+  display: none;
+}
+input[type=checkbox]:checked + label:before {
+  content: '\e807';
+}
 span {
   border: solid 1px #b1afc0;
   color: #55545c;
@@ -26,4 +54,28 @@ span:active {
 }
 [class^="icon-"]:before {
   line-height: 25px;
+}
+
+span[data-cmd="pin"][data-value="true"]:before {
+  content: '\e804';
+}
+span[class="icon-whatsapp"] {
+  position: relative;
+}
+span[data-badge]:not([data-badge="0"]):after {
+  content: attr(data-badge);
+  display: block;
+  color: #fff;
+  background-color: #4790f5;
+  font-family: Arial;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 2px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  max-width: 30px;
+  min-width: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
