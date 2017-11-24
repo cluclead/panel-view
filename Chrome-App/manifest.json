@@ -1,8 +1,8 @@
 {
-  "name": "WhatsApp™ Messenger",
+  "name": "Messenger for WhatsApp™",
   "description": "Access to WhatsApp official Web UI in an stand-alone sandboxed window",
   "author": "Morni Colhkher",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "manifest_version": 2,
   "permissions": [
     "storage",
@@ -21,7 +21,10 @@
   },
   "icons": {
     "16": "data/icons/16.png",
+    "32": "data/icons/32.png",
     "48": "data/icons/48.png",
-    "128": "data/icons/128.png"
+    "64": "data/icons/64.png",
+    "128": "data/icons/128.png",
+    "256": "data/icons/256.png"
   }
 }

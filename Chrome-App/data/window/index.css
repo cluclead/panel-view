@@ -6,11 +6,15 @@ body {
   padding: 5px 5px 5px 0;
   font-size: 14px;
 }
-#toolbar {
+#toolbar,
+#toolbar div {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 40px;
+}
+#toolbar div:first-child {
+  flex: 1;
 }
 #content {
   flex: 1;
@@ -59,4 +63,23 @@ span[data-badge]:not([data-badge="0"]):after {
   min-width: 11px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#options {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+#options iframe {
+  border: none;
+  width: 80%;
+  min-width: 200px;
+  background-color: #fff;
 }

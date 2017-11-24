@@ -38,3 +38,24 @@ iframe {
   width: 650px;
   height: 100%;
 }
+
+span[class="icon-whatsapp"] {
+  position: relative;
+}
+span[data-badge]:not([data-badge="0"]):after {
+  content: attr(data-badge);
+  display: block;
+  color: #fff;
+  background-color: #4790f5;
+  font-family: Arial;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 2px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  max-width: 30px;
+  min-width: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

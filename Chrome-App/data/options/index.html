@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Options :: WhatsApp™ Messenger</title>
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      font-family: sans-serif;
+      font-size: 12px;
+      margin: 10px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 20px);
+    }
+    input[type=submit] {
+      height: 32px;
+      width: 100px;
+      background-color: #fff;
+      border: solid 1px #ccc;
+      outline: none;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    form>div:last-child {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="form">
+    <div>
+      <label><input id="whatsapp.badge" type="checkbox">Display badge number over WhatsApp icon (requires refresh)</label>
+      <br>
+      <label><input id="whatsapp.media" type="checkbox">Allow WhatsApp to access your microphone and camera</label>
+      <br>
+      <label><input id="whatsapp.notification" type="checkbox">Allow WhatsApp to push desktop notifications</label>
+    </div>
+    <div>
+      <input type="submit" value="Save">
+    </div>
+  </form>
+  <span id="status"></span>
+
+  <script src="index.js"></script>
+</body>
+</html>
+

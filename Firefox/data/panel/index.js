@@ -25,8 +25,9 @@ document.addEventListener('click', function (e) {
 self.port.on('hide', () => pin.dataset.value = 'false');
 // permissions
 document.getElementById('cb_a').checked = self.options.permissions.audio;
+self.port.on('audio-permission', (bol) => document.getElementById('cb_a').checked = bol);
 //document.getElementById('cb_v').checked = self.options.permissions.video;
 //document.getElementById('cb_p').checked = self.options.permissions.picture;
 
-// init WhatsApp 3 seconds
+// init WhatsApp
 window.setTimeout(() => self.port.emit('init'), 0);

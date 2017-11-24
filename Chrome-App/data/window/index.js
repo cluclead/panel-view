@@ -1,69 +1,97 @@
 'use strict';
 
 var badge = document.querySelector('[data-badge]');
+var options = document.getElementById('options');
 var webview = document.querySelector('webview');
-webview.addEventListener('permissionrequest', (e) => {
+
+var config = {
+  badge: true,
+  notification: true,
+  media: true
+};
+// storage
+function update() {
+  chrome.storage.local.get({
+    'whatsapp.badge': true,
+    'whatsapp.media': true,
+    'whatsapp.notification': true
+  }, prefs => {
+    config.badge = prefs['whatsapp.badge'];
+    config.notification = prefs['whatsapp.notification'];
+    config.media = prefs['whatsapp.media'];
+    webview.contentWindow.postMessage({
+      cmd: 'notification-permission',
+      value: config.notification ? 'granted' : 'denied'
+    }, '*');
+  });
+}
+chrome.storage.onChanged.addListener(update);
+// webview
+webview.addEventListener('permissionrequest', e => {
   if (e.permission === 'media') {
+    if (config.media) {
+      e.request.allow();
+    }
+    else {
+      e.request.deny();
+    }
+  }
+  else if (e.permission === 'filesystem') {
     e.request.allow();
   }
 });
-webview.addEventListener('loadstop', (e) => {
-  e.target.executeScript({
-    code: `
-if (document.body.dataset.installed !== 'true') {
-  var appWindow;
-  window.addEventListener('message', (e) => {
-    if (e.data === 'app-init') {
-      appWindow = event.source;
-    }
-    if (e.data.cmd === 'title-changed' && appWindow) {
-      appWindow.postMessage(e.data, '*');
-    }
-  });
-  // watching title changes
-  var script = document.createElement('script');
-  script.textContent = '' +
-  'var _title;' +
-  'Object.defineProperty(document, "title", {' +
-  '  enumerable: true,' +
-  '  configurable: true,' +
-  '  get: function () {' +
-  '    return _title;' +
-  '  },' +
-  '  set: function (val) {' +
-  '    _title = val;' +
-  '    window.postMessage({cmd: "title-changed", title: val}, "*");' +
-  '  }' +
-  '});';
-  document.body.appendChild(script);
-  document.body.dataset.installed = true;
-}
-    `
-  });
-  e.target.contentWindow.postMessage('app-init', '*');
-});
-
-window.addEventListener('message', e => {
-  if (e.data.cmd === 'title-changed') {
-    let val = /\((\d+)\)/.exec(e.data.title);
-    badge.dataset.badge = val && val.length ? val[1] : 0;
-    //chrome.app.window.current().setIcon('./data/icons/message/128.png')
+webview.addEventListener('newwindow', e => {
+  const url = e.targetUrl;
+  if (url) {
+    chrome.browser.openTab({url});
   }
 });
 
+chrome.runtime.onMessage.addListener(message => {
+  if (message.cmd === 'title-changed') {
+    const value = /\((\d+)\)/.exec(message.title);
+    badge.dataset.badge = value && value.length && config.badge ? value[1] : 0;
+    //chrome.app.window.current().setIcon('./data/icons/message/128.png')
+    chrome.runtime.sendMessage('ngblblklhhjbgihpcoaanbchheneglbj', {
+      cmd: 'update-badge',
+      value: value && value.length ? value[1] : 0
+    });
+  }
+  else if (message.cmd === 'update') {
+    update();
+  }
+});
 
-webview.setAttribute('src', 'https://web.whatsapp.com/');
+document.addEventListener('DOMContentLoaded', () => {
+  webview.addContentScripts([{
+    name:'inject',
+    matches: [
+      '*://web.whatsapp.com/*'
+    ],
+    run_at: 'document_idle',
+    js: {
+      files: ['data/window/inject.js']
+    },
+  }]);
+  webview.setAttribute('src', 'https://web.whatsapp.com/');
+});
 
-document.addEventListener('click', (e) => {
-  let cmd = e.target.dataset.cmd;
+document.addEventListener('click', e => {
+  const cmd = e.target.dataset.cmd;
   if (cmd === 'refresh') {
     webview.setAttribute('src', 'about:blank');
     webview.setAttribute('src', 'https://web.whatsapp.com/');
   }
-  else {
-    chrome.runtime.sendMessage({
-      method: cmd,
-      data: e.target.dataset.value
+  else if (cmd === 'settings') {
+    options.style.display = 'flex';
+  }
+  else if (cmd === 'open') {
+    chrome.browser.openTab({
+      url: e.target.dataset.value
     });
   }
+});
+
+options.addEventListener('click', () => {
+  options.style.display = 'none';
 });

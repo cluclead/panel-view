@@ -14,9 +14,30 @@ var {getActiveView} = require('sdk/view/core');
 var Worker = require('sdk/content/worker').Worker;  // jshint ignore:line
 
 var panel, button, browser, workers = [], config = {
-  audio: sp.prefs['audio-permission'],
-  video: sp.prefs['video-permission'],
-  picture: sp.prefs['picture-permission']
+  get audio () {
+    return sp.prefs['audio-permission'];
+  },
+  set audio (val) {
+    sp.prefs['audio-permission'] = val;
+  },
+  get video () {
+    return sp.prefs['video-permission'];
+  },
+  set video (val) {
+    sp.prefs['video-permission'] = val;
+  },
+  get picture () {
+    return sp.prefs['picture-permission'];
+  },
+  set picture (val) {
+    sp.prefs['picture-permission'] = val;
+  },
+  get notification () {
+    return sp.prefs['notification-permission'];
+  },
+  set notification (val) {
+    sp.prefs['notification-permission'] = val;
+  }
 };
 
 function update (title) {
@@ -68,48 +89,42 @@ panel.port.on('settings', () => {
   utils.getMostRecentBrowserWindow().BrowserOpenAddonsMgr('addons://detail/' + self.id);
 });
 panel.port.on('pin', bol => getActiveView(panel).setAttribute('noautohide', bol));
-panel.port.on('audio-permission', bol => {
-  config.audio = bol === 'true';
-  sp.prefs['audio-permission'] = config.audio;
-});
-panel.port.on('video-permission', bol => {
-  config.video = bol === 'true';
-  sp.prefs['video-permission'] = config.video;
-});
-panel.port.on('picture-permission', bol => {
-  config.picture = bol === 'true';
-  sp.prefs['picture-permission'] = config.picture;
-});
+panel.port.on('audio-permission', bol => config.audio = bol === 'true');
+panel.port.on('video-permission', bol => config.video = bol === 'true');
+panel.port.on('picture-permission', bol => config.picture = bol === 'true');
 panel.port.on('init', () => {
   let panelView = getActiveView(panel);
-    // display tooltips
-    panelView.setAttribute('tooltip', 'aHTMLTooltip');
-    // whatsapp cannot be loaded in an iframe; we use a safe browser element (type=content)
-    let document = panelView.ownerDocument;
-    browser = document.createElement('browser');
-    browser.setAttribute('type', 'content');
-    panelView.appendChild(browser);
-    browser.addEventListener('DOMContentLoaded', () => {
-      let worker = new Worker({
-        window: browser.contentWindow,
-        contentScriptFile: self.data.url('./inject/inject.js'),
-      });
-      worker.on('pageshow', () => array.add(workers, worker));
-      worker.on('pagehide', () => array.remove(workers, worker));
-      worker.on('detach', () => array.remove(workers, worker));
-      worker.port.on('title', update);
+  // display tooltips
+  panelView.setAttribute('tooltip', 'aHTMLTooltip');
+  // whatsapp cannot be loaded in an iframe; we use a safe browser element (type=content)
+  let document = panelView.ownerDocument;
+  browser = document.createElement('browser');
+  browser.setAttribute('type', 'content');
+  panelView.appendChild(browser);
+  browser.addEventListener('DOMContentLoaded', () => {
+    let worker = new Worker({
+      window: browser.contentWindow,
+      contentScriptFile: self.data.url('./inject/inject.js'),
     });
-    browser.setAttribute('src', 'https://web.whatsapp.com/');
+    worker.on('pageshow', () => array.add(workers, worker));
+    worker.on('pagehide', () => array.remove(workers, worker));
+    worker.on('detach', () => array.remove(workers, worker));
+    worker.port.on('title', update);
+    worker.port.emit('prefs', {
+      permissions: config
+    });
+  });
+  browser.setAttribute('src', 'https://web.whatsapp.com/');
 
-    panelView.addEventListener('popupshowing', () => {
-      browser.setAttribute('style', `width: ${sp.prefs.width}px; height: ${sp.prefs.height}px;`);
-      panel.port.emit('hide');
-      if (panelView.firstChild === browser) {
-        let iframe = panelView.querySelector('iframe');
-        iframe.style.width = '40px';
-        panelView.dir = 'reverse';
-      }
-    });
+  panelView.addEventListener('popupshowing', () => {
+    browser.setAttribute('style', `width: ${sp.prefs.width}px; height: ${sp.prefs.height}px;`);
+    panel.port.emit('hide');
+    if (panelView.firstChild === browser) {
+      let iframe = panelView.querySelector('iframe');
+      iframe.style.width = '40px';
+      panelView.dir = 'reverse';
+    }
+  });
 });
 
 // user permissions
@@ -164,6 +179,17 @@ sp.on('height', () => timers.setTimeout(() => {
   sp.prefs.height = Math.max(300, sp.prefs.height);
   panel.height = sp.prefs.height;
 }, 2000));
+sp.on('notification-permission', () => {
+  workers.forEach(w => w.port.emit('prefs', {
+    permissions: config
+  }));
+});
+sp.on('notification-permission', () => workers.forEach(w => w.port.emit('prefs', {
+  permissions: config
+})));
+sp.on('audio-permission', () => panel.port.emit('audio-permission', config.audio));
+sp.on('video-permission', () => panel.port.emit('video-permission', config.video));
+sp.on('picture-permission', () => panel.port.emit('picture-permission', config.picture));
 
 // reactivate WhatsApp if tab is closed
 tabs.on('close', function (tab) {

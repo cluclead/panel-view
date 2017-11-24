@@ -1,9 +1,9 @@
 {
-  "name": "WhatsApp™ Messenger",
+  "name": "Messenger for WhatsApp™",
   "short_name": "iwweb",
-  "description": "Access to WhatsApp official Web UI in an stand-alone window",
+  "description": "Access to WhatsApp official Web UI in a browser popup",
   "author": "Morni Colhkher",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "manifest_version": 2,
   "permissions": [
     "storage",
@@ -11,7 +11,7 @@
     "notifications",
     "webRequest",
     "webRequestBlocking",
-    "<all_urls>"
+    "*://web.whatsapp.com/*"
   ],
   "web_accessible_resources": [],
   "browser_action": {
@@ -27,15 +27,21 @@
     ]
   },
   "content_scripts": [{
-    "matches": ["<all_urls>"],
+    "matches": ["*://web.whatsapp.com/*"],
     "js": ["data/inject/inject.js"],
     "run_at": "document_start",
-    "all_frames": false
+    "all_frames": true
   }],
   "homepage_url": "http://add0n.com/whatsapp-messenger.html",
   "icons": {
     "16": "data/icons/16.png",
     "48": "data/icons/48.png",
     "128": "data/icons/128.png"
+  },
+  "applications": {
+    "gecko": {
+      "id": "rt42fsdty645jIidD@jetpack",
+      "strict_min_version": "55.0"
+    }
   }
 }
